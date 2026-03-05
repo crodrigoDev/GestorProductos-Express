@@ -35,9 +35,9 @@ CREATE TABLE Producto(
     fecha_actualizacion DATETIME NULL ON UPDATE CURRENT_TIMESTAMP
 );
 
-insert Marca (detalle) values ("Samsung"),("LG"),("Sony"),("Iphone"),("JBL"),("Xiaomi"),("Canon"),("Asus"),("Gigabyte"),("Steelseries"),("MSI");
-insert Categoria (detalle) values ("Televisores"),("Celulares"),("Tablets"),("Camaras"),("Parlantes"),("Monitores"),("Auriculares y Audifonos"),("Laptops");
-insert Estado (detalle) values ("Activo"),("Inactivo"),("Descontinuado"),("Agotado");
+insert into Marca (detalle) values ("Samsung"),("LG"),("Sony"),("Iphone"),("JBL"),("Xiaomi"),("Canon"),("Asus"),("Gigabyte"),("Steelseries"),("MSI");
+insert into Categoria (detalle) values ("Televisores"),("Celulares"),("Tablets"),("Camaras"),("Parlantes"),("Monitores"),("Auriculares y Audifonos"),("Laptops");
+insert into Estado (detalle) values ("Activo"),("Inactivo"),("Descontinuado"),("Agotado");
 
 INSERT Producto (id, nombre, id_marca, id_categoria, descripcion, precio, stock, stock_min, stock_max, id_estado)values 
 	-- Televisores
@@ -78,6 +78,8 @@ create view vwProductos as
 	select 
 		p.id,
         p.nombre,
+        p.id_marca,
+        p.id_categoria,
         m.detalle as marca,
         c.detalle as categoria,
         p.descripcion,
@@ -85,6 +87,7 @@ create view vwProductos as
         p.stock,
         p.stock_min,
         p.stock_max,
+        p.id_estado,
         e.detalle as estado,
         p.fecha_creacion,
         p.fecha_actualizacion

@@ -1,18 +1,12 @@
 import { Router } from 'express';
-import { listarMarcas } from '../services/marcas.service';
+import {
+  listarMarcasControlador,
+  listarMarcasConTotalControlador,
+} from '../controllers/marcas.controller';
 
 const marcaRouter = Router();
 
-marcaRouter.get('/', async (req, res) => {
-  try {
-    const marcas = await listarMarcas();
-    res.json(marcas);
-  } catch (error) {
-    res.status(500).json({
-      message: 'No se pudo listar las marcas',
-      detail: error instanceof Error ? error.message : 'Error desconocido',
-    });
-  }
-});
+marcaRouter.get('/', listarMarcasControlador);
+marcaRouter.get('/con-count', listarMarcasConTotalControlador);
 
 export { marcaRouter };

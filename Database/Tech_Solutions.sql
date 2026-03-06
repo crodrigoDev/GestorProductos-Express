@@ -124,6 +124,17 @@ create procedure sp_editarCategoria(
 )
 	update Categoria set detalle = p_detalle where id = p_id;
     
+create procedure sp_listarCategoriaContar()
+	select
+		c.id,
+		c.detalle,
+		COUNT(p.id) as total_productos,
+		c.fecha_creacion,
+		c.fecha_actualizacion
+	from Categoria c
+	left join Producto p on p.id_categoria = c.id
+	group by c.id, c.detalle, c.fecha_creacion, c.fecha_actualizacion;
+
 create procedure sp_listarCategoria()
 	select
 		*
@@ -145,11 +156,26 @@ create procedure sp_editarMarca (
 )
 	update Marca set detalle = p_detalle where id = p_id;
     
+create procedure sp_listarMarcasContar()
+	select
+		m.id,
+		m.detalle,
+		COUNT(p.id) as total_productos,
+		m.fecha_creacion,
+		m.fecha_actualizacion
+	from Marca m
+	left join Producto p on p.id_marca = m.id
+	group by m.id, m.detalle, m.fecha_creacion, m.fecha_actualizacion;
+
 create procedure sp_listarMarcas()
 	select * from Marca;
     
 create procedure sp_listarMarcaId(in p_id int)
 	select * from Marca where id = p_id;
+
+-- Estado
+create procedure sp_listarEstados()
+	select * from Estado;
     
 -- Producto
 create procedure sp_listarProductosFiltro(

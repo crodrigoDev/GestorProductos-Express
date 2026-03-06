@@ -1,13 +1,13 @@
 import { RowDataPacket } from 'mysql2';
 import { pool } from '../config/database';
 
-export type ProductFilters = {
+export type FiltrosProducto = {
   estado: number | null;
   marca: number | null;
   categoria: number | null;
 };
 
-export type ProductRow = {
+export type FilaProducto = {
   id: number;
   nombre: string;
   id_marca: number;
@@ -24,11 +24,18 @@ export type ProductRow = {
   fecha_creacion: string;
   fecha_actualizacion: string | null;
 };
-export async function listProducts(filters: ProductFilters): Promise<ProductRow[]> {
+export async function listarProductos(filters: FiltrosProducto): Promise<FilaProducto[]> {
   const [resultSets] = await pool.query<RowDataPacket[][]>(
     'CALL sp_listarProductosFiltro(?, ?, ?)',
     [filters.estado, filters.marca, filters.categoria]
   );
 
-  return (resultSets?.[0] ?? []) as unknown as ProductRow[];
+  return (resultSets?.[0] ?? []) as unknown as FilaProducto[];
 }
+
+export async function cambiarEstadoProducto(idProducto: number, idEstado: number): Promise<void> {
+  await pool.query('CALL sp_cambiarEstado(?, ?)', [idProducto, idEstado]);
+}
+
+export type ProductFilters = FiltrosProducto;
+export type ProductRow = FilaProducto;

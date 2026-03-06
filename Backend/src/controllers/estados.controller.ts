@@ -3,12 +3,9 @@ import { catalogFacade } from '../facades/catalog.facade';
 
 export async function listarEstadosControlador(_req: Request, res: Response) {
   try {
-    const estados = await catalogFacade.listStates();
+    const estados = await catalogFacade.listarEstados();
     res.json(estados);
-  } catch (error) {
-    res.status(500).json({
-      message: 'No se pudo listar estados',
-      detail: error instanceof Error ? error.message : 'Error desconocido',
-    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
 }

@@ -1,18 +1,6 @@
 import { RowDataPacket } from 'mysql2';
 import { pool } from '../config/database';
-
-export type Marca = {
-    id: number;
-    detalle: string;
-}
-
-export type MarcaConCount = {
-    id: number;
-    detalle: string;
-    total_productos: number;
-    fecha_creacion: string;
-    fecha_actualizacion: string | null;
-}
+import type { Marca, MarcaConCount } from '../types';
 
 export async function listarMarcas(): Promise<Marca[]> {
     const [resultSets] = await pool.query<RowDataPacket[][]>(
@@ -28,4 +16,8 @@ export async function listarMarcasConCount(): Promise<MarcaConCount[]> {
     );
 
     return (resultSets?.[0] ?? []) as unknown as MarcaConCount[];
+}
+
+export async function crearMarca(detalle: string): Promise<void> {
+    await pool.query('CALL sp_crearMarca(?)', [detalle]);
 }

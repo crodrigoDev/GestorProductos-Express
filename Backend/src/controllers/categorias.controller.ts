@@ -3,24 +3,27 @@ import { catalogFacade } from '../facades/catalog.facade';
 
 export async function listarCategoriasControlador(_req: Request, res: Response) {
   try {
-    const categorias = await catalogFacade.listCategories();
+    const categorias = await catalogFacade.listarCategorias();
     res.json(categorias);
-  } catch (error) {
-    res.status(500).json({
-      message: 'No se pudo listar categorias',
-      detail: error instanceof Error ? error.message : 'Error desconocido',
-    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
 }
 
 export async function listarCategoriasConTotalControlador(_req: Request, res: Response) {
   try {
-    const categorias = await catalogFacade.listCategoriesWithCount();
+    const categorias = await catalogFacade.listarCategoriasConCount();
     res.json(categorias);
-  } catch (error) {
-    res.status(500).json({
-      message: 'No se pudo listar categorias con count',
-      detail: error instanceof Error ? error.message : 'Error desconocido',
-    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+export async function crearCategoriaControlador(req: Request, res: Response) {
+  try {
+    await catalogFacade.crearCategoria(req.body.detalle);
+    res.status(201).json({ message: 'Categoria creada' });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
   }
 }

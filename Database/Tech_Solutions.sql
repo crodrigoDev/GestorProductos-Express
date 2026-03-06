@@ -1,3 +1,4 @@
+Drop Database Tech_Solutions;
 CREATE DATABASE IF NOT EXISTS Tech_Solutions;
 USE Tech_Solutions;
 

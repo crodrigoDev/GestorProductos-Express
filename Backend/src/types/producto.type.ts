@@ -1,9 +1,15 @@
-export interface Productos {
+export type FiltrosProducto = {
+  estado: number | null;
+  marca: number | null;
+  categoria: number | null;
+};
+
+export type Producto = {
   id: number;
   nombre: string;
   id_marca: number;
-  id_categoria: number;
   marca: string;
+  id_categoria: number;
   categoria: string;
   descripcion: string;
   precio: number;
@@ -14,9 +20,9 @@ export interface Productos {
   estado: string;
   fecha_creacion: string;
   fecha_actualizacion: string | null;
-}
+};
 
-export interface ProductoNuevo {
+export type CrearProducto = {
   nombre: string;
   id_marca: number;
   id_categoria: number;
@@ -26,10 +32,4 @@ export interface ProductoNuevo {
   stock_min: number;
   stock_max: number;
   id_estado: number;
-}
-
-export interface FiltroProductos {
-  estado?: number | null;
-  marca?: number | null;
-  categoria?: number | null;
-}
+};

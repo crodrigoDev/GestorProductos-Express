@@ -1,50 +1,61 @@
-import {
-  listarProductos,
-  cambiarEstadoProducto,
-  type FiltrosProducto,
-  type FilaProducto,
-} from '../services/productos.service';
-import {
-  listarCategoria,
-  listarCategoriaConCount,
-  type Categoria,
-  type CategoriaConCount,
-} from '../services/categoria.service';
-import {
-  listarMarcas,
-  listarMarcasConCount,
-  type Marca,
-  type MarcaConCount,
-} from '../services/marcas.service';
-import { listarEstados, type Estado } from '../services/estados.service';
+import * as productosService from '../services/productos.service';
+import * as categoriaService from '../services/categoria.service';
+import * as marcasService from '../services/marcas.service';
+import * as estadosService from '../services/estados.service';
+import type {
+  FiltrosProducto, Producto, CrearProducto,
+  Categoria, CategoriaConCount,
+  Marca, MarcaConCount,
+  Estado,
+} from '../types';
 
 class CatalogFacade {
-  listProducts(filters: FiltrosProducto): Promise<FilaProducto[]> {
-    return listarProductos(filters);
+  // Productos
+  listarProductos(filtros: FiltrosProducto): Promise<Producto[]> {
+    return productosService.listarProductos(filtros);
   }
 
-  changeProductStatus(productId: number, statusId: number): Promise<void> {
-    return cambiarEstadoProducto(productId, statusId);
+  crearProducto(data: CrearProducto): Promise<void> {
+    return productosService.agregarProducto(data);
   }
 
-  listCategories(): Promise<Categoria[]> {
-    return listarCategoria();
+  editarProducto(id: number, data: CrearProducto): Promise<void> {
+    return productosService.editarProducto(id, data);
   }
 
-  listCategoriesWithCount(): Promise<CategoriaConCount[]> {
-    return listarCategoriaConCount();
+  cambiarEstado(idProducto: number, idEstado: number): Promise<void> {
+    return productosService.cambiarEstadoProducto(idProducto, idEstado);
   }
 
-  listBrands(): Promise<Marca[]> {
-    return listarMarcas();
+  // Categorias
+  listarCategorias(): Promise<Categoria[]> {
+    return categoriaService.listarCategoria();
   }
 
-  listBrandsWithCount(): Promise<MarcaConCount[]> {
-    return listarMarcasConCount();
+  listarCategoriasConCount(): Promise<CategoriaConCount[]> {
+    return categoriaService.listarCategoriaConCount();
   }
 
-  listStates(): Promise<Estado[]> {
-    return listarEstados();
+  crearCategoria(detalle: string): Promise<void> {
+    return categoriaService.crearCategoria(detalle);
+  }
+
+  // Marcas
+  listarMarcas(): Promise<Marca[]> {
+    return marcasService.listarMarcas();
+  }
+
+  listarMarcasConCount(): Promise<MarcaConCount[]> {
+    return marcasService.listarMarcasConCount();
+  }
+
+  crearMarca(detalle: string): Promise<void> {
+    return marcasService.crearMarca(detalle);
+  }
+
+  // Estados
+  listarEstados(): Promise<Estado[]> {
+    return estadosService.listarEstados();
   }
 }
 

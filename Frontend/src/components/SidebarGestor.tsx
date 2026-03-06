@@ -1,6 +1,6 @@
 import { BadgeCheck, LayoutDashboard, Package, Tags } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import type { MenuItem } from '../types/menu-item';
+import type { MenuItem } from '@/types';
 import {
   Sidebar,
   SidebarContent,

@@ -1,10 +1,7 @@
 import { Card, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import type { ModuloNoEncontradoProps } from '@/types';
 
-export type ModuloNoEncontradoProps = {
-  titulo: string;
-};
-
-export default function ModuloNoEncontrado({ titulo }: { titulo: string }) {
+export default function ModuloNoEncontrado({ titulo }: ModuloNoEncontradoProps) {
   return (
     <Card>
       <CardHeader>

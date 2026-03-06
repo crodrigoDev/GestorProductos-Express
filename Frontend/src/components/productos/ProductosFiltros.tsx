@@ -1,7 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Button } from '../ui/button';
-import type { Categorias } from '../../types/categorias';
-import type { Marcas } from '../../types/marcas';
+import type { Categorias, Marcas } from '@/types';
 
 type ProductosFiltrosProps = {
   filtroEstado: number | '';

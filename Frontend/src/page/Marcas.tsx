@@ -1,47 +1,49 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import DataTableGestor, { type DataTableColumn } from '../components/DataTableGestor';
-import { listarMarcasConTotal } from '../api/marcas.api';
-import type { MarcasConCount } from '../types/marcas';
+import TablaMarcas from '../components/marcas/TablaMarcas';
+import { crearMarca, listarMarcasConTotal } from '@/api';
+import type { MarcasConCount } from '@/types';
 
 export default function MarcasPage() {
 	const [marcas, setMarcas] = useState<MarcasConCount[]>([]);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
+	const [guardando, setGuardando] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [nombreMarca, setNombreMarca] = useState('');
 
-	const columns: DataTableColumn<MarcasConCount>[] = [
-		{ header: 'ID', render: (row) => row.id },
-		{ header: 'Nombre', render: (row) => row.detalle },
-		{ header: 'Total Productos', render: (row) => row.total_productos },
-		{ header: 'Fecha Creacion', render: (row) => new Date(row.fecha_creacion).toLocaleDateString() },
-		{ header: 'Ultima Actualizacion', render: (row) => row.fecha_actualizacion ? new Date(row.fecha_actualizacion).toLocaleDateString() : '-' },
-	];
+	const cargarMarcas = async (signal?: AbortSignal) => {
+		try {
+			const data = await listarMarcasConTotal(signal);
+			setMarcas(data);
+		} catch (err) {
+			if (err instanceof DOMException && err.name === 'AbortError') return;
+			setError(err instanceof Error ? err.message : 'Error desconocido');
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	useEffect(() => {
 		const controller = new AbortController();
-
-		async function loadMarcas() {
-			setLoading(true);
-			setError(null);
-			try {
-				const data = await listarMarcasConTotal(controller.signal);
-				setMarcas(data);
-			} catch (err) {
-				if (err instanceof DOMException && err.name === 'AbortError') {
-					return;
-				}
-				setError(err instanceof Error ? err.message : 'Error desconocido');
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		loadMarcas();
+		cargarMarcas(controller.signal);
 		return () => controller.abort();
 	}, []);
 
-	const handleAdd = () => {
-		console.log('Agregar marca');
+	const handleAdd = async () => {
+		const detalle = nombreMarca.trim();
+		if (!detalle) return setError('Ingresa el nombre de la marca');
+
+		try {
+			setGuardando(true);
+			setError(null);
+			await crearMarca(detalle);
+			setNombreMarca('');
+			await cargarMarcas();
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'No se pudo crear la marca');
+		} finally {
+			setGuardando(false);
+		}
 	};
 
 	const handleEdit = (row: MarcasConCount) => {
@@ -55,14 +57,16 @@ export default function MarcasPage() {
 				<CardDescription>Marcas obtenidas</CardDescription>
 			</CardHeader>
 			<CardContent>
-				{loading && <p className="text-sm text-slate-500">Cargando marcas...</p>}
-				{error && <p className="text-sm text-red-600">{error}</p>}
-				{!loading && !error && (
-					<DataTableGestor
-						columns={columns}
-						rows={marcas}
-						getRowKey={(row) => row.id}
+				{error && <p className="text-sm text-red-600 mb-2">{error}</p>}
+				{loading ? (
+					<p className="text-sm text-slate-500">Cargando marcas...</p>
+				) : (
+					<TablaMarcas
+						marcas={marcas}
+						nombreMarca={nombreMarca}
+						onChangeNombre={setNombreMarca}
 						onAdd={handleAdd}
+						isAdding={guardando}
 						onEdit={handleEdit}
 					/>
 				)}

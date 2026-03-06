@@ -27,3 +27,12 @@ export async function crearCategoriaControlador(req: Request, res: Response) {
     res.status(400).json({ error: error.message });
   }
 }
+
+export async function editarCategoriaControlador(req: Request, res: Response) {
+  try {
+    await catalogFacade.editarCategoria(Number(req.params.id), req.body.detalle);
+    res.json({ message: 'Categoria actualizada' });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+}

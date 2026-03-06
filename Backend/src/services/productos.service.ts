@@ -1,46 +1,24 @@
-import { RowDataPacket } from 'mysql2';
-import { pool } from '../config/database';
+import { callList, callVoid, query } from '../config/database';
 import type { FiltrosProducto, Producto, CrearProducto } from '../types';
 
-export async function listarProductos(filters: FiltrosProducto): Promise<Producto[]> {
-  const [resultSets] = await pool.query<RowDataPacket[][]>(
-    'CALL sp_listarProductosFiltro(?, ?, ?)',
-    [filters.estado, filters.marca, filters.categoria]
-  );
+export const listarProductos = (filters: FiltrosProducto) =>
+  callList<Producto>('sp_listarProductosFiltro(?, ?, ?)', [filters.estado, filters.marca, filters.categoria]);
 
-  return (resultSets?.[0] ?? []) as unknown as Producto[];
-}
+export const cambiarEstadoProducto = (idProducto: number, idEstado: number) =>
+  callVoid('sp_cambiarEstado(?, ?)', [idProducto, idEstado]);
 
-export async function cambiarEstadoProducto(idProducto: number, idEstado: number): Promise<void> {
-  await pool.query('CALL sp_cambiarEstado(?, ?)', [idProducto, idEstado]);
-}
-
-export async function agregarProducto(agregar: CrearProducto): Promise<void> {
-  await pool.query('CALL sp_crearProducto(?, ?, ?, ?, ?, ?, ?, ?, ?)', [
-    agregar.nombre,
-    agregar.id_marca,
-    agregar.id_categoria,
-    agregar.descripcion,
-    agregar.precio,
-    agregar.stock,
-    agregar.stock_min,
-    agregar.stock_max,
-    agregar.id_estado,
+export const agregarProducto = (p: CrearProducto) =>
+  callVoid('sp_crearProducto(?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+    p.nombre, p.id_marca, p.id_categoria, p.descripcion,
+    p.precio, p.stock, p.stock_min, p.stock_max, p.id_estado,
   ]);
-}
 
-export async function editarProducto(idProducto: number, producto: CrearProducto): Promise<void> {
-  await pool.query('CALL sp_editarProducto(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
-    idProducto,
-    producto.nombre,
-    producto.id_marca,
-    producto.id_categoria,
-    producto.descripcion,
-    producto.precio,
-    producto.stock,
-    producto.stock_min,
-    producto.stock_max,
-    producto.id_estado,
+export const editarProducto = (id: number, p: CrearProducto) =>
+  callVoid('sp_editarProducto(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+    id, p.nombre, p.id_marca, p.id_categoria, p.descripcion,
+    p.precio, p.stock, p.stock_min, p.stock_max, p.id_estado,
   ]);
-}
+
+export const eliminarProducto = (id: number) =>
+  query('DELETE FROM Producto WHERE id = ?', [id]);
 

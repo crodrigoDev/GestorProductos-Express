@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import TablaMarcas from '../components/marcas/TablaMarcas';
-import { crearMarca, listarMarcasConTotal } from '@/api';
+import { crearMarca, editarMarca, listarMarcasConTotal } from '@/api';
 import type { MarcasConCount } from '@/types';
 
 export default function MarcasPage() {
@@ -10,6 +10,7 @@ export default function MarcasPage() {
 	const [guardando, setGuardando] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [nombreMarca, setNombreMarca] = useState('');
+	const [editandoId, setEditandoId] = useState<number | null>(null);
 
 	const cargarMarcas = async (signal?: AbortSignal) => {
 		try {
@@ -36,18 +37,31 @@ export default function MarcasPage() {
 		try {
 			setGuardando(true);
 			setError(null);
-			await crearMarca(detalle);
+			if (editandoId) {
+				await editarMarca(editandoId, detalle);
+				setEditandoId(null);
+			} else {
+				await crearMarca(detalle);
+			}
 			setNombreMarca('');
 			await cargarMarcas();
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'No se pudo crear la marca');
+			setError(err instanceof Error ? err.message : 'No se pudo guardar la marca');
 		} finally {
 			setGuardando(false);
 		}
 	};
 
 	const handleEdit = (row: MarcasConCount) => {
-		console.log('Editar marca', row.id);
+		setEditandoId(row.id);
+		setNombreMarca(row.detalle);
+		setError(null);
+	};
+
+	const handleCancelEdit = () => {
+		setEditandoId(null);
+		setNombreMarca('');
+		setError(null);
 	};
 
 	return (
@@ -68,6 +82,8 @@ export default function MarcasPage() {
 						onAdd={handleAdd}
 						isAdding={guardando}
 						onEdit={handleEdit}
+						editandoId={editandoId}
+						onCancelEdit={handleCancelEdit}
 					/>
 				)}
 			</CardContent>

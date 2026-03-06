@@ -4,6 +4,8 @@ import TablaProductos from '../components/productos/TablaProductos';
 import ProductosFiltros from '../components/productos/ProductosFiltros';
 import {
 	agregarProducto,
+	editarProducto,
+	eliminarProducto,
 	cambiarEstadoProducto,
 	listarCategorias,
 	listarEstados,
@@ -21,6 +23,7 @@ export default function ProductosPage() {
 	const [idProductoCambiando, setIdProductoCambiando] = useState<number | null>(null);
 	const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
 	const [guardandoProducto, setGuardandoProducto] = useState(false);
+	const [productoEditando, setProductoEditando] = useState<Productos | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
@@ -85,30 +88,44 @@ export default function ProductosPage() {
 
 	const handleAdd = () => {
 		setError(null);
+		setProductoEditando(null);
 		setModalAgregarAbierto(true);
 	};
 
 	const handleCreateProduct = async (producto: ProductoNuevo) => {
 		try {
 			setGuardandoProducto(true);
-			await agregarProducto(producto);
+			if (productoEditando) {
+				await editarProducto(productoEditando.id, producto);
+			} else {
+				await agregarProducto(producto);
+			}
 			await recargarProductos();
 
 			setModalAgregarAbierto(false);
+			setProductoEditando(null);
 			setError(null);
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'No se pudo agregar el producto');
+			setError(err instanceof Error ? err.message : 'No se pudo guardar el producto');
 		} finally {
 			setGuardandoProducto(false);
 		}
 	};
 
 	const handleEdit = (row: Productos) => {
-		console.log('Editar producto', row.id);
+		setError(null);
+		setProductoEditando(row);
+		setModalAgregarAbierto(true);
 	};
 
-	const handleDelete = (row: Productos) => {
-		console.log('Eliminar producto', row.id);
+	const handleDelete = async (row: Productos) => {
+		try {
+			setError(null);
+			await eliminarProducto(row.id);
+			await recargarProductos();
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'No se pudo eliminar el producto');
+		}
 	};
 
 	const handleClearFilters = () => {
@@ -168,12 +185,16 @@ export default function ProductosPage() {
 
 			<ProductoAgregar
 				open={modalAgregarAbierto}
-				onOpenChange={setModalAgregarAbierto}
+				onOpenChange={(open) => {
+					setModalAgregarAbierto(open);
+					if (!open) setProductoEditando(null);
+				}}
 				categorias={categorias}
 				marcas={marcas}
 				estados={estados}
 				onSubmit={handleCreateProduct}
 				isSubmitting={guardandoProducto}
+				productoEditar={productoEditando}
 			/>
 		</>
 	);

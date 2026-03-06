@@ -27,3 +27,12 @@ export async function crearMarcaControlador(req: Request, res: Response) {
     res.status(400).json({ error: error.message });
   }
 }
+
+export async function editarMarcaControlador(req: Request, res: Response) {
+  try {
+    await catalogFacade.editarMarca(Number(req.params.id), req.body.detalle);
+    res.json({ message: 'Marca actualizada' });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+}

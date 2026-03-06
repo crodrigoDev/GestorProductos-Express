@@ -1,5 +1,5 @@
 import { type FormEvent, useEffect, useState } from 'react';
-import type { Categorias, Estado, Marcas, ProductoNuevo } from '@/types';
+import type { Categorias, Estado, Marcas, ProductoNuevo, Productos } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -26,6 +26,7 @@ type ProductoAgregarProps = {
 	estados: Estado[];
 	onSubmit: (producto: ProductoNuevo) => Promise<void> | void;
 	isSubmitting?: boolean;
+	productoEditar?: Productos | null;
 };
 
 type FormState = {
@@ -60,19 +61,34 @@ export default function ProductoAgregar({
 	estados,
 	onSubmit,
 	isSubmitting = false,
+	productoEditar = null,
 }: ProductoAgregarProps) {
+	const esEdicion = !!productoEditar;
 	const [form, setForm] = useState<FormState>(initialFormState);
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (open) {
 			setError(null);
+			if (productoEditar) {
+				setForm({
+					nombre: productoEditar.nombre,
+					id_marca: String(productoEditar.id_marca),
+					id_categoria: String(productoEditar.id_categoria),
+					descripcion: productoEditar.descripcion,
+					precio: String(productoEditar.precio),
+					stock: String(productoEditar.stock),
+					stock_min: String(productoEditar.stock_min),
+					stock_max: String(productoEditar.stock_max),
+					id_estado: String(productoEditar.id_estado),
+				});
+			}
 			return;
 		}
 
 		setForm(initialFormState);
 		setError(null);
-	}, [open]);
+	}, [open, productoEditar]);
 
 	function handleInputChange(field: keyof FormState, value: string) {
 		setForm((prev) => ({ ...prev, [field]: value }));
@@ -134,8 +150,8 @@ export default function ProductoAgregar({
 		<Sheet open={open} onOpenChange={onOpenChange}>
 			<SheetContent side="right" className="w-full overflow-y-auto sm:max-w-xl">
 				<SheetHeader>
-					<SheetTitle>Agregar producto</SheetTitle>
-					<SheetDescription>Completa los datos para registrar un nuevo producto.</SheetDescription>
+					<SheetTitle>{esEdicion ? 'Editar producto' : 'Agregar producto'}</SheetTitle>
+					<SheetDescription>{esEdicion ? 'Modifica los datos del producto.' : 'Completa los datos para registrar un nuevo producto.'}</SheetDescription>
 				</SheetHeader>
 
 				<form onSubmit={handleSubmit} className="space-y-4 px-4 pb-6">
@@ -288,7 +304,7 @@ export default function ProductoAgregar({
 								Cancelar
 							</Button>
 							<Button type="submit" disabled={isSubmitting}>
-								{isSubmitting ? 'Guardando...' : 'Guardar producto'}
+								{isSubmitting ? 'Guardando...' : esEdicion ? 'Editar producto' : 'Guardar producto'}
 							</Button>
 						</div>
 					</SheetFooter>

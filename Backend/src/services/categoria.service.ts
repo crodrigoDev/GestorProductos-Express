@@ -1,23 +1,10 @@
-import { RowDataPacket } from 'mysql2';
-import { pool } from '../config/database';
+import { callList, callVoid } from '../config/database';
 import type { Categoria, CategoriaConCount } from '../types';
 
-export async function listarCategoria(): Promise<Categoria[]> {
-    const [resultSets] = await pool.query<RowDataPacket[][]>(
-        'CALL sp_listarCategoria()'
-    );
+export const listarCategoria = () => callList<Categoria>('sp_listarCategoria()');
 
-    return (resultSets?.[0] ?? []) as unknown as Categoria[];
-}
+export const listarCategoriaConCount = () => callList<CategoriaConCount>('sp_listarCategoriaContar()');
 
-export async function listarCategoriaConCount(): Promise<CategoriaConCount[]> {
-    const [resultSets] = await pool.query<RowDataPacket[][]>(
-        'CALL sp_listarCategoriaContar()'
-    );
+export const crearCategoria = (detalle: string) => callVoid('sp_crearCategoria(?)', [detalle]);
 
-    return (resultSets?.[0] ?? []) as unknown as CategoriaConCount[];
-}
-
-export async function crearCategoria(detalle: string): Promise<void> {
-    await pool.query('CALL sp_crearCategoria(?)', [detalle]);
-}
+export const editarCategoria = (id: number, detalle: string) => callVoid('sp_editarCategoria(?, ?)', [id, detalle]);

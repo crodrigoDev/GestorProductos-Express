@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import TablaCategorias from '../components/categorias/TablaCategorias';
-import { crearCategoria, listarCategoriasConTotal } from '@/api';
+import { crearCategoria, editarCategoria, listarCategoriasConTotal } from '@/api';
 import type { CategoriasConCount } from '@/types';
 
 export default function CategoriasPage() {
@@ -10,6 +10,7 @@ export default function CategoriasPage() {
 	const [guardando, setGuardando] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [nombreCategoria, setNombreCategoria] = useState('');
+	const [editandoId, setEditandoId] = useState<number | null>(null);
 
 	const cargarCategorias = async (signal?: AbortSignal) => {
 		try {
@@ -36,18 +37,31 @@ export default function CategoriasPage() {
 		try {
 			setGuardando(true);
 			setError(null);
-			await crearCategoria(detalle);
+			if (editandoId) {
+				await editarCategoria(editandoId, detalle);
+				setEditandoId(null);
+			} else {
+				await crearCategoria(detalle);
+			}
 			setNombreCategoria('');
 			await cargarCategorias();
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'No se pudo crear la categoria');
+			setError(err instanceof Error ? err.message : 'No se pudo guardar la categoria');
 		} finally {
 			setGuardando(false);
 		}
 	};
 
 	const handleEdit = (row: CategoriasConCount) => {
-		console.log('Editar categoria', row.id);
+		setEditandoId(row.id);
+		setNombreCategoria(row.detalle);
+		setError(null);
+	};
+
+	const handleCancelEdit = () => {
+		setEditandoId(null);
+		setNombreCategoria('');
+		setError(null);
 	};
 
 	return (
@@ -68,6 +82,8 @@ export default function CategoriasPage() {
 						onAdd={handleAdd}
 						isAdding={guardando}
 						onEdit={handleEdit}
+						editandoId={editandoId}
+						onCancelEdit={handleCancelEdit}
 					/>
 				)}
 			</CardContent>

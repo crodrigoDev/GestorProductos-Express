@@ -27,6 +27,10 @@ class CatalogFacade {
     return productosService.cambiarEstadoProducto(idProducto, idEstado);
   }
 
+  eliminarProducto(id: number): Promise<void> {
+    return productosService.eliminarProducto(id);
+  }
+
   // Categorias
   listarCategorias(): Promise<Categoria[]> {
     return categoriaService.listarCategoria();
@@ -40,6 +44,10 @@ class CatalogFacade {
     return categoriaService.crearCategoria(detalle);
   }
 
+  editarCategoria(id: number, detalle: string): Promise<void> {
+    return categoriaService.editarCategoria(id, detalle);
+  }
+
   // Marcas
   listarMarcas(): Promise<Marca[]> {
     return marcasService.listarMarcas();
@@ -51,6 +59,10 @@ class CatalogFacade {
 
   crearMarca(detalle: string): Promise<void> {
     return marcasService.crearMarca(detalle);
+  }
+
+  editarMarca(id: number, detalle: string): Promise<void> {
+    return marcasService.editarMarca(id, detalle);
   }
 
   // Estados

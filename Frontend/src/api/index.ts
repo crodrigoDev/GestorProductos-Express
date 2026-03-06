@@ -72,3 +72,31 @@ export async function agregarProducto(producto: ProductoNuevo) {
     body: JSON.stringify(producto),
   });
 }
+
+export async function editarProducto(id: number, producto: ProductoNuevo) {
+  await fetch(`${API}/productos/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(producto),
+  });
+}
+
+export async function eliminarProducto(id: number) {
+  await fetch(`${API}/productos/${id}`, { method: 'DELETE' });
+}
+
+export async function editarMarca(id: number, detalle: string) {
+  await fetch(`${API}/marcas/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ detalle }),
+  });
+}
+
+export async function editarCategoria(id: number, detalle: string) {
+  await fetch(`${API}/categorias/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ detalle }),
+  });
+}

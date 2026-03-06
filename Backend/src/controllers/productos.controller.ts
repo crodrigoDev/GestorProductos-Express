@@ -40,3 +40,12 @@ export async function cambiarEstadoProductoControlador(req: Request, res: Respon
     res.status(400).json({ error: error.message });
   }
 }
+
+export async function eliminarProductoControlador(req: Request, res: Response) {
+  try {
+    await catalogFacade.eliminarProducto(Number(req.params.id));
+    res.json({ message: 'Producto eliminado' });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+}

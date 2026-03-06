@@ -4,6 +4,7 @@ import { productosRouter } from './routes/productos.routes';
 import { categoriaRouter } from './routes/categoria.routes';
 import { marcaRouter } from './routes/marcas.routes';
 import { estadosRouter } from './routes/estados.routes';
+import { connect, close } from './config/database';
 
 const app = express();
 const PORT = 3000;
@@ -20,8 +21,18 @@ app.use('/api/categorias', categoriaRouter);
 app.use('/api/marcas', marcaRouter);
 app.use('/api/estados', estadosRouter);
 
+connect().then(() => {
+  const server = app.listen(PORT, () => {
+    console.log(`Servidor backend escuchando en http://localhost:${PORT}`);
+  });
 
+  process.on('SIGINT', async () => {
+    await close();
+    server.close(() => process.exit(0));
+  });
 
-app.listen(PORT, () => {
-  console.log(`Servidor backend escuchando en http://localhost:${PORT}`);
+  process.on('SIGTERM', async () => {
+    await close();
+    server.close(() => process.exit(0));
+  });
 });

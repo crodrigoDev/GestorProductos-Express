@@ -177,7 +177,7 @@ export default function ProductoAgregar({
 								<SelectContent>
 									{marcas.map((marca) => (
 										<SelectItem key={marca.id} value={String(marca.id)}>
-											{marca.nombre ?? marca.detalle ?? `Marca ${marca.id}`}
+											{marca.detalle}
 										</SelectItem>
 									))}
 								</SelectContent>
@@ -196,7 +196,7 @@ export default function ProductoAgregar({
 								<SelectContent>
 									{categorias.map((categoria) => (
 										<SelectItem key={categoria.id} value={String(categoria.id)}>
-											{categoria.nombre ?? categoria.detalle ?? `Categoria ${categoria.id}`}
+											{categoria.detalle}
 										</SelectItem>
 									))}
 								</SelectContent>

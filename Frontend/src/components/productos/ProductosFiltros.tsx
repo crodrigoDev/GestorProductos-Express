@@ -1,6 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Button } from '../ui/button';
-import type { Categorias, Marcas } from '@/types';
+import type { Categorias, Estado, Marcas } from '@/types';
 
 type ProductosFiltrosProps = {
   filtroEstado: number | '';
@@ -10,7 +10,7 @@ type ProductosFiltrosProps = {
   onChangeMarca: (value: number | '') => void;
   onChangeCategoria: (value: number | '') => void;
   onClear: () => void;
-  estados: Array<{ id: number; detalle: string }>;
+  estados: Estado[];
   marcas: Marcas[];
   categorias: Categorias[];
 };
@@ -59,7 +59,7 @@ export default function ProductosFiltros({
           <SelectItem value="all">Todas las marcas</SelectItem>
           {marcas.map((marca) => (
             <SelectItem key={marca.id} value={String(marca.id)}>
-              {marca.detalle ?? marca.nombre}
+              {marca.detalle}
             </SelectItem>
           ))}
         </SelectContent>
@@ -76,7 +76,7 @@ export default function ProductosFiltros({
           <SelectItem value="all">Todas las categorias</SelectItem>
           {categorias.map((categoria) => (
             <SelectItem key={categoria.id} value={String(categoria.id)}>
-              {categoria.detalle ?? categoria.nombre}
+              {categoria.detalle}
             </SelectItem>
           ))}
         </SelectContent>

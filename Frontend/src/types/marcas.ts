@@ -1,7 +1,6 @@
 export interface Marcas {
   id: number;
-  nombre?: string;
-  detalle?: string;
+  detalle: string;
 }
 
 export interface MarcasConCount {

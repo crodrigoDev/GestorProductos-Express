@@ -2,6 +2,13 @@ import type { Categorias, CategoriasConCount, Estado, FiltroProductos, Marcas, M
 
 const API = 'http://localhost:3000/api';
 
+async function handleResponse(res: Response): Promise<void> {
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.error ?? 'Error en la solicitud');
+  }
+}
+
 // Categorias
 export async function listarCategorias(signal?: AbortSignal) {
   const res = await fetch(`${API}/categorias`, { signal });
@@ -14,11 +21,12 @@ export async function listarCategoriasConTotal(signal?: AbortSignal) {
 }
 
 export async function crearCategoria(detalle: string) {
-  await fetch(`${API}/categorias`, {
+  const res = await fetch(`${API}/categorias`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ detalle }),
   });
+  await handleResponse(res);
 }
 
 // Estados
@@ -39,11 +47,12 @@ export async function listarMarcasConTotal(signal?: AbortSignal) {
 }
 
 export async function crearMarca(detalle: string) {
-  await fetch(`${API}/marcas`, {
+  const res = await fetch(`${API}/marcas`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ detalle }),
   });
+  await handleResponse(res);
 }
 
 // Productos
@@ -58,45 +67,51 @@ export async function listarProductos(signal?: AbortSignal, filtros?: FiltroProd
 }
 
 export async function cambiarEstadoProducto(idProducto: number, idEstado: number) {
-  await fetch(`${API}/productos/${idProducto}/estado`, {
+  const res = await fetch(`${API}/productos/${idProducto}/estado`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id_estado: idEstado }),
   });
+  await handleResponse(res);
 }
 
 export async function agregarProducto(producto: ProductoNuevo) {
-  await fetch(`${API}/productos`, {
+  const res = await fetch(`${API}/productos`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(producto),
   });
+  await handleResponse(res);
 }
 
 export async function editarProducto(id: number, producto: ProductoNuevo) {
-  await fetch(`${API}/productos/${id}`, {
+  const res = await fetch(`${API}/productos/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(producto),
   });
+  await handleResponse(res);
 }
 
 export async function eliminarProducto(id: number) {
-  await fetch(`${API}/productos/${id}`, { method: 'DELETE' });
+  const res = await fetch(`${API}/productos/${id}`, { method: 'DELETE' });
+  await handleResponse(res);
 }
 
 export async function editarMarca(id: number, detalle: string) {
-  await fetch(`${API}/marcas/${id}`, {
+  const res = await fetch(`${API}/marcas/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ detalle }),
   });
+  await handleResponse(res);
 }
 
 export async function editarCategoria(id: number, detalle: string) {
-  await fetch(`${API}/categorias/${id}`, {
+  const res = await fetch(`${API}/categorias/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ detalle }),
   });
+  await handleResponse(res);
 }

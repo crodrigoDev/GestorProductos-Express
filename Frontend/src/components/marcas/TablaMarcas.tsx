@@ -3,6 +3,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
 import type { MarcasConCount } from '@/types';
+import { formatFecha } from '@/helpers/formato';
 
 type TablaMarcasProps = {
 	marcas: MarcasConCount[];
@@ -66,12 +67,8 @@ export default function TablaMarcas({
 										<TableCell>{m.id}</TableCell>
 										<TableCell>{m.detalle}</TableCell>
 										<TableCell>{m.total_productos}</TableCell>
-										<TableCell>{new Date(m.fecha_creacion).toLocaleDateString()}</TableCell>
-										<TableCell>
-											{m.fecha_actualizacion
-												? new Date(m.fecha_actualizacion).toLocaleDateString()
-												: '-'}
-										</TableCell>
+										<TableCell>{formatFecha(m.fecha_creacion)}</TableCell>
+										<TableCell>{formatFecha(m.fecha_actualizacion)}</TableCell>
 										<TableCell>
 											<Button variant="outline" size="sm" onClick={() => onEdit(m)}>
 												Editar

@@ -1,7 +1,6 @@
 export interface Categorias {
   id: number;
-  nombre?: string;
-  detalle?: string;
+  detalle: string;
 }
 
 export interface CategoriasConCount {

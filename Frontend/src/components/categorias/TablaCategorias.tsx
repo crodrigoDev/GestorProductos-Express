@@ -3,6 +3,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
 import type { CategoriasConCount } from '@/types';
+import { formatFecha } from '@/helpers/formato';
 
 type TablaCategoriasProps = {
 	categorias: CategoriasConCount[];
@@ -66,12 +67,8 @@ export default function TablaCategorias({
 										<TableCell>{c.id}</TableCell>
 										<TableCell>{c.detalle}</TableCell>
 										<TableCell>{c.total_productos}</TableCell>
-										<TableCell>{new Date(c.fecha_creacion).toLocaleDateString()}</TableCell>
-										<TableCell>
-											{c.fecha_actualizacion
-												? new Date(c.fecha_actualizacion).toLocaleDateString()
-												: '-'}
-										</TableCell>
+										<TableCell>{formatFecha(c.fecha_creacion)}</TableCell>
+										<TableCell>{formatFecha(c.fecha_actualizacion)}</TableCell>
 										<TableCell>
 											<Button variant="outline" size="sm" onClick={() => onEdit(c)}>
 												Editar

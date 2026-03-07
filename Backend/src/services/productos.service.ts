@@ -20,5 +20,5 @@ export const editarProducto = (id: number, p: CrearProducto) =>
   ]);
 
 export const eliminarProducto = (id: number) =>
-  query('DELETE FROM Producto WHERE id = ?', [id]);
+  callVoid('sp_eliminarProducto(?)', [id]);
 

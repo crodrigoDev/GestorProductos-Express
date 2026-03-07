@@ -249,3 +249,8 @@ create procedure sp_listarProductoId(
 	select
 		*
 	from vwProductoid;
+    
+create procedure sp_eliminarProducto(
+	in p_id int
+)
+	delete from producto where id = p_id;

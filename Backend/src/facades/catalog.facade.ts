@@ -40,11 +40,19 @@ class CatalogFacade {
     return categoriaService.listarCategoriaConCount();
   }
 
-  crearCategoria(detalle: string): Promise<void> {
+  async crearCategoria(detalle: string): Promise<void> {
+    const existentes = await categoriaService.listarCategoria();
+    if (existentes.some(c => c.detalle.toLowerCase() === detalle.toLowerCase())) {
+      throw new Error('Ya existe una categoria con ese nombre');
+    }
     return categoriaService.crearCategoria(detalle);
   }
 
-  editarCategoria(id: number, detalle: string): Promise<void> {
+  async editarCategoria(id: number, detalle: string): Promise<void> {
+    const existentes = await categoriaService.listarCategoria();
+    if (existentes.some(c => c.id !== id && c.detalle.toLowerCase() === detalle.toLowerCase())) {
+      throw new Error('Ya existe una categoria con ese nombre');
+    }
     return categoriaService.editarCategoria(id, detalle);
   }
 
@@ -57,11 +65,19 @@ class CatalogFacade {
     return marcasService.listarMarcasConCount();
   }
 
-  crearMarca(detalle: string): Promise<void> {
+  async crearMarca(detalle: string): Promise<void> {
+    const existentes = await marcasService.listarMarcas();
+    if (existentes.some(m => m.detalle.toLowerCase() === detalle.toLowerCase())) {
+      throw new Error('Ya existe una marca con ese nombre');
+    }
     return marcasService.crearMarca(detalle);
   }
 
-  editarMarca(id: number, detalle: string): Promise<void> {
+  async editarMarca(id: number, detalle: string): Promise<void> {
+    const existentes = await marcasService.listarMarcas();
+    if (existentes.some(m => m.id !== id && m.detalle.toLowerCase() === detalle.toLowerCase())) {
+      throw new Error('Ya existe una marca con ese nombre');
+    }
     return marcasService.editarMarca(id, detalle);
   }
 

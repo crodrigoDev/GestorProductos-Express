@@ -2,27 +2,20 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from '../ui/alert-dialog';
 import type { Estado, Productos } from '@/types';
-
-function formatFecha(fecha: string | null): string {
-	if (!fecha) return '-';
-	return new Date(fecha).toLocaleString();
-}
-
-function varianteEstado(nombreEstado: string): 'default' | 'secondary' | 'destructive' | 'outline' {
-	const estado = nombreEstado.toLowerCase();
-	if (estado === 'activo') return 'default';
-	if (estado === 'inactivo') return 'secondary';
-	if (estado === 'descontinuado') return 'destructive';
-	return 'outline';
-}
-
-function obtenerSiguienteEstado(estados: Estado[], idEstadoActual: number): Estado | null {
-	if (estados.length === 0) return null;
-	const indice = estados.findIndex((e) => e.id === idEstadoActual);
-	if (indice === -1) return estados[0];
-	return estados[(indice + 1) % estados.length];
-}
+import { formatFecha } from '@/helpers/formato';
+import { varianteEstado, obtenerSiguienteEstado } from '@/helpers/estados';
 
 type TablaProductosProps = {
 	productos: Productos[];
@@ -109,9 +102,27 @@ export default function TablaProductos({
 													<Button variant="outline" size="sm" onClick={() => onEdit(p)}>
 														Editar
 													</Button>
-													<Button variant="destructive" size="sm" onClick={() => onDelete(p)}>
-														Eliminar
-													</Button>
+													<AlertDialog>
+														<AlertDialogTrigger asChild>
+															<Button variant="destructive" size="sm">
+																Eliminar
+															</Button>
+														</AlertDialogTrigger>
+														<AlertDialogContent>
+															<AlertDialogHeader>
+																<AlertDialogTitle>¿Eliminar producto?</AlertDialogTitle>
+																<AlertDialogDescription>
+																	Se eliminará <strong>{p.nombre}</strong>. Esta acción no se puede deshacer.
+																</AlertDialogDescription>
+															</AlertDialogHeader>
+															<AlertDialogFooter>
+																<AlertDialogCancel>Cancelar</AlertDialogCancel>
+																<AlertDialogAction onClick={() => onDelete(p)}>
+																	Eliminar
+																</AlertDialogAction>
+															</AlertDialogFooter>
+														</AlertDialogContent>
+													</AlertDialog>
 												</div>
 											</TableCell>
 										</TableRow>

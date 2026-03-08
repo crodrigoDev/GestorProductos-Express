@@ -4,3 +4,4 @@ export type { Marcas, MarcasConCount } from './marcas';
 export type { MenuItem } from './menu-item';
 export type { FiltroProductos, ProductoNuevo, Productos } from './productos';
 export type { ModuloNoEncontradoProps } from './modulo-no-encontrado';
+export type { DashboardResumen, UltimaActividad, ProductosPorCategoria, ProductosPorMarca, ProductosPorEstado } from './dashboard';

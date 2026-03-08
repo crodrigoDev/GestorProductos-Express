@@ -36,3 +36,13 @@ export async function editarCategoriaControlador(req: Request, res: Response) {
     res.status(400).json({ error: error.message });
   }
 }
+
+export async function obtenerCategoriaPorIdControlador(req: Request, res: Response) {
+  try {
+    const categoria = await catalogFacade.obtenerCategoriaPorId(Number(req.params.id));
+    if (!categoria) return res.status(404).json({ error: 'Categoria no encontrada' });
+    res.json(categoria);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+}

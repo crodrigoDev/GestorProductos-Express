@@ -10,7 +10,6 @@ type TablaCategoriasProps = {
 	nombreCategoria: string;
 	onChangeNombre: (value: string) => void;
 	onAdd: () => void;
-	isAdding: boolean;
 	onEdit: (row: CategoriasConCount) => void;
 	editandoId: number | null;
 	onCancelEdit: () => void;
@@ -21,7 +20,6 @@ export default function TablaCategorias({
 	nombreCategoria,
 	onChangeNombre,
 	onAdd,
-	isAdding,
 	onEdit,
 	editandoId,
 	onCancelEdit,
@@ -35,11 +33,11 @@ export default function TablaCategorias({
 					placeholder="Nombre de categoria"
 					className="w-full sm:w-72"
 				/>
-				<Button onClick={onAdd} disabled={isAdding}>
-					{isAdding ? 'Guardando...' : editandoId ? 'Editar' : 'Agregar'}
+				<Button onClick={onAdd}>
+					{editandoId ? 'Editar' : 'Agregar'}
 				</Button>
 				{editandoId && (
-					<Button variant="outline" onClick={onCancelEdit} disabled={isAdding}>
+					<Button variant="outline" onClick={onCancelEdit}>
 						Cancelar
 					</Button>
 				)}

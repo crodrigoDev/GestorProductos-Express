@@ -1,0 +1,18 @@
+import { Router } from 'express';
+import {
+  obtenerResumenControlador,
+  obtenerUltimaActividadControlador,
+  obtenerProductosPorCategoriaControlador,
+  obtenerProductosPorMarcaControlador,
+  obtenerProductosPorEstadoControlador,
+} from '../controllers/dashboard.controller';
+
+const dashboardRouter = Router();
+
+dashboardRouter.get('/resumen', obtenerResumenControlador);
+dashboardRouter.get('/ultima-actividad', obtenerUltimaActividadControlador);
+dashboardRouter.get('/productos-por-categoria', obtenerProductosPorCategoriaControlador);
+dashboardRouter.get('/productos-por-marca', obtenerProductosPorMarcaControlador);
+dashboardRouter.get('/productos-por-estado', obtenerProductosPorEstadoControlador);
+
+export { dashboardRouter };

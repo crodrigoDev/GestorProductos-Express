@@ -1,10 +1,26 @@
-import { callList, callVoid } from '../config/database';
+import { getConnection } from '../config/database';
 import type { Marca, MarcaConCount } from '../types';
 
-export const listarMarcas = () => callList<Marca>('sp_listarMarcas()');
+export async function listarMarcas(): Promise<Marca[]> {
+  const [rows] = await getConnection().query('CALL sp_listarMarcas()');
+  return ((rows as unknown[][])?.[0] ?? []) as Marca[];
+}
 
-export const listarMarcasConCount = () => callList<MarcaConCount>('sp_listarMarcasContar()');
+export async function listarMarcasConCount(): Promise<MarcaConCount[]> {
+  const [rows] = await getConnection().query('CALL sp_listarMarcasContar()');
+  return ((rows as unknown[][])?.[0] ?? []) as MarcaConCount[];
+}
 
-export const crearMarca = (detalle: string) => callVoid('sp_crearMarca(?)', [detalle]);
+export async function crearMarca(detalle: string): Promise<void> {
+  await getConnection().query('CALL sp_crearMarca(?)', [detalle]);
+}
 
-export const editarMarca = (id: number, detalle: string) => callVoid('sp_editarMarca(?, ?)', [id, detalle]);
+export async function obtenerMarcaPorId(id: number): Promise<Marca | null> {
+  const [rows] = await getConnection().query('CALL sp_listarMarcaId(?)', [id]);
+  const data = (rows as unknown[][])?.[0] as Marca[] | undefined;
+  return data?.[0] ?? null;
+}
+
+export async function editarMarca(id: number, detalle: string): Promise<void> {
+  await getConnection().query('CALL sp_editarMarca(?, ?)', [id, detalle]);
+}

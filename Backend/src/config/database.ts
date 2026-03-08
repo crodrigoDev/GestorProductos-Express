@@ -10,7 +10,7 @@ const dbConfig = {
 
 let connection: Connection | null = null;
 
-function getConnection(): Connection {
+export function getConnection(): Connection {
   if (!connection) throw new Error('La conexion a la base de datos no esta activa. Llama a connect() primero.');
   return connection;
 }
@@ -28,17 +28,4 @@ export async function close(): Promise<void> {
     connection = null;
     console.log('Conexion a la base de datos cerrada');
   }
-}
-
-export async function callList<T>(sp: string, params: unknown[] = []): Promise<T[]> {
-  const [resultSets] = await getConnection().query(`CALL ${sp}`, params);
-  return ((resultSets as unknown[][])?.[0] ?? []) as T[];
-}
-
-export async function callVoid(sp: string, params: unknown[] = []): Promise<void> {
-  await getConnection().query(`CALL ${sp}`, params);
-}
-
-export async function query(sql: string, params: unknown[] = []): Promise<void> {
-  await getConnection().query(sql, params);
 }

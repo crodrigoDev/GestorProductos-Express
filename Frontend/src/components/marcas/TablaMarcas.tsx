@@ -10,7 +10,6 @@ type TablaMarcasProps = {
 	nombreMarca: string;
 	onChangeNombre: (value: string) => void;
 	onAdd: () => void;
-	isAdding: boolean;
 	onEdit: (row: MarcasConCount) => void;
 	editandoId: number | null;
 	onCancelEdit: () => void;
@@ -21,7 +20,6 @@ export default function TablaMarcas({
 	nombreMarca,
 	onChangeNombre,
 	onAdd,
-	isAdding,
 	onEdit,
 	editandoId,
 	onCancelEdit,
@@ -35,11 +33,11 @@ export default function TablaMarcas({
 					placeholder="Nombre de marca"
 					className="w-full sm:w-72"
 				/>
-				<Button onClick={onAdd} disabled={isAdding}>
-					{isAdding ? 'Guardando...' : editandoId ? 'Editar' : 'Agregar'}
+				<Button onClick={onAdd}>
+					{editandoId ? 'Editar' : 'Agregar'}
 				</Button>
 				{editandoId && (
-					<Button variant="outline" onClick={onCancelEdit} disabled={isAdding}>
+					<Button variant="outline" onClick={onCancelEdit}>
 						Cancelar
 					</Button>
 				)}

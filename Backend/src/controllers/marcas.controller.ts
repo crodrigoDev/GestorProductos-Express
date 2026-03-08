@@ -36,3 +36,13 @@ export async function editarMarcaControlador(req: Request, res: Response) {
     res.status(400).json({ error: error.message });
   }
 }
+
+export async function obtenerMarcaPorIdControlador(req: Request, res: Response) {
+  try {
+    const marca = await catalogFacade.obtenerMarcaPorId(Number(req.params.id));
+    if (!marca) return res.status(404).json({ error: 'Marca no encontrada' });
+    res.json(marca);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+}

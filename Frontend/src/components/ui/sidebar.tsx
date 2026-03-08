@@ -5,7 +5,6 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { PanelLeftIcon } from "lucide-react"
 import { Slot } from "radix-ui"
 
-import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,7 +16,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
   TooltipContent,
@@ -66,7 +64,14 @@ function SidebarProvider({
   open?: boolean
   onOpenChange?: (open: boolean) => void
 }) {
-  const isMobile = useIsMobile()
+  const [isMobile, setIsMobile] = React.useState(false)
+  React.useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)")
+    const onChange = () => setIsMobile(window.innerWidth < 768)
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < 768)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
   const [openMobile, setOpenMobile] = React.useState(false)
 
   // This is the internal state of the sidebar.
@@ -619,13 +624,13 @@ function SidebarMenuSkeleton({
       {...props}
     >
       {showIcon && (
-        <Skeleton
-          className="size-4 rounded-md"
+        <div
+          className="size-4 rounded-md bg-sidebar-accent"
           data-sidebar="menu-skeleton-icon"
         />
       )}
-      <Skeleton
-        className="h-4 max-w-(--skeleton-width) flex-1"
+      <div
+        className="h-4 max-w-(--skeleton-width) flex-1 bg-sidebar-accent rounded-md"
         data-sidebar="menu-skeleton-text"
         style={
           {

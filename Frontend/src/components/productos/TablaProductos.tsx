@@ -20,7 +20,6 @@ import { varianteEstado, obtenerSiguienteEstado } from '@/helpers/estados';
 type TablaProductosProps = {
 	productos: Productos[];
 	estados: Estado[];
-	idProductoCambiando: number | null;
 	onCambiarEstado: (producto: Productos, nuevoEstado: Estado) => void;
 	onAdd: () => void;
 	onEdit: (row: Productos) => void;
@@ -30,7 +29,6 @@ type TablaProductosProps = {
 export default function TablaProductos({
 	productos,
 	estados,
-	idProductoCambiando,
 	onCambiarEstado,
 	onAdd,
 	onEdit,
@@ -88,10 +86,10 @@ export default function TablaProductos({
 													<button
 														type="button"
 														onClick={() => siguiente && onCambiarEstado(p, siguiente)}
-														disabled={!siguiente || idProductoCambiando === p.id}
+														disabled={!siguiente}
 														title="Click para cambiar estado"
 													>
-														{idProductoCambiando === p.id ? 'Cambiando...' : p.estado}
+														{p.estado}
 													</button>
 												</Badge>
 											</TableCell>
@@ -112,7 +110,7 @@ export default function TablaProductos({
 															<AlertDialogHeader>
 																<AlertDialogTitle>¿Eliminar producto?</AlertDialogTitle>
 																<AlertDialogDescription>
-																	Se eliminará <strong>{p.nombre}</strong>. Esta acción no se puede deshacer.
+																	Se eliminara <strong>{p.nombre}</strong>. Esta accion no se puede deshacer.
 																</AlertDialogDescription>
 															</AlertDialogHeader>
 															<AlertDialogFooter>

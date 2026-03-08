@@ -49,3 +49,13 @@ export async function eliminarProductoControlador(req: Request, res: Response) {
     res.status(400).json({ error: error.message });
   }
 }
+
+export async function obtenerProductoPorIdControlador(req: Request, res: Response) {
+  try {
+    const producto = await catalogFacade.obtenerProductoPorId(Number(req.params.id));
+    if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
+    res.json(producto);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+}

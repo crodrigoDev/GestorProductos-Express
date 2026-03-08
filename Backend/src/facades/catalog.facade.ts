@@ -2,11 +2,13 @@ import * as productosService from '../services/productos.service';
 import * as categoriaService from '../services/categoria.service';
 import * as marcasService from '../services/marcas.service';
 import * as estadosService from '../services/estados.service';
+import * as dashboardService from '../services/dashboard.service';
 import type {
   FiltrosProducto, Producto, CrearProducto,
   Categoria, CategoriaConCount,
   Marca, MarcaConCount,
   Estado,
+  DashboardResumen, UltimaActividad, ProductosPorCategoria, ProductosPorMarca,
 } from '../types';
 
 class CatalogFacade {
@@ -29,6 +31,10 @@ class CatalogFacade {
 
   eliminarProducto(id: number): Promise<void> {
     return productosService.eliminarProducto(id);
+  }
+
+  obtenerProductoPorId(id: number): Promise<CrearProducto | null> {
+    return productosService.obtenerProductoPorId(id);
   }
 
   // Categorias
@@ -56,6 +62,10 @@ class CatalogFacade {
     return categoriaService.editarCategoria(id, detalle);
   }
 
+  obtenerCategoriaPorId(id: number): Promise<Categoria | null> {
+    return categoriaService.obtenerCategoriaPorId(id);
+  }
+
   // Marcas
   listarMarcas(): Promise<Marca[]> {
     return marcasService.listarMarcas();
@@ -81,9 +91,34 @@ class CatalogFacade {
     return marcasService.editarMarca(id, detalle);
   }
 
+  obtenerMarcaPorId(id: number): Promise<Marca | null> {
+    return marcasService.obtenerMarcaPorId(id);
+  }
+
   // Estados
   listarEstados(): Promise<Estado[]> {
     return estadosService.listarEstados();
+  }
+
+  // Dashboard
+  obtenerResumen(): Promise<DashboardResumen> {
+    return dashboardService.obtenerResumen();
+  }
+
+  obtenerUltimaActividad(): Promise<UltimaActividad[]> {
+    return dashboardService.obtenerUltimaActividad();
+  }
+
+  obtenerProductosPorCategoria(): Promise<ProductosPorCategoria[]> {
+    return dashboardService.obtenerProductosPorCategoria();
+  }
+
+  obtenerProductosPorMarca(): Promise<ProductosPorMarca[]> {
+    return dashboardService.obtenerProductosPorMarca();
+  }
+
+  obtenerProductosPorEstado() {
+    return dashboardService.obtenerProductosPorEstado();
   }
 }
 

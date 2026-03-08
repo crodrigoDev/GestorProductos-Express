@@ -48,7 +48,7 @@ INSERT Producto (id, nombre, id_marca, id_categoria, descripcion, precio, stock,
     (null, "LG OLED C3 65", 2, 1, "Televisor OLED 65 pulgadas 4K", 3999.99, 8, 2, 15, 1),
     
 	-- Celulares
-	(null, "Galaxy S23", 1, 2,  "Smartphone con cámara triple y 256GB", 3500.00, 10, 5, 20, 1),
+	(null, "Galaxy S23", 1, 2,  "Smartphone con camara triple y 256GB", 3500.00, 10, 5, 20, 1),
 	(null, "iPhone 14", 4, 2, "Pantalla OLED y chip A15 Bionic", 4200.00, 8, 5, 30, 1),
 	(null, "iPhone 15 Pro", 4, 2, "Celular 256GB color titanio", 4599.90, 20, 5, 40, 1),
 	(null, "Xiaomi Redmi Note 13", 6, 2, "Celular 128GB pantalla AMOLED", 899.90, 35, 10, 60, 1),
@@ -101,7 +101,8 @@ create view vwProductos as
 		on e.id = p.id_estado;
         
 create view vwProductoid as
-	select 
+	select
+		id,
 		nombre,
         id_marca,
         id_categoria,
@@ -143,7 +144,7 @@ create procedure sp_listarCategoria()
     
 create procedure sp_listarCategoriaId(in p_id int)
 	select
-		*
+		id, detalle
 	from Categoria
     where id = p_id;
 
@@ -172,7 +173,7 @@ create procedure sp_listarMarcas()
 	select * from Marca;
     
 create procedure sp_listarMarcaId(in p_id int)
-	select * from Marca where id = p_id;
+	select id,detalle from Marca where id = p_id;
 
 -- Estado
 create procedure sp_listarEstados()
@@ -248,9 +249,55 @@ create procedure sp_listarProductoId(
 )
 	select
 		*
-	from vwProductoid;
+	from vwProductoid
+    where id = p_id;
     
 create procedure sp_eliminarProducto(
 	in p_id int
 )
 	delete from producto where id = p_id;
+
+-- Dashboard
+create procedure sp_dashboardResumen()
+	select
+		(select count(*) from Producto) as total_productos,
+		(select count(*) from Marca) as total_marcas,
+		(select count(*) from Categoria) as total_categorias;
+
+create procedure sp_dashboardUltimaActividad()
+	select tipo, nombre, fecha_actualizacion from (
+		select 'Producto' as tipo, nombre, fecha_actualizacion from Producto where fecha_actualizacion is not null
+		union all
+		select 'Marca' as tipo, detalle as nombre, fecha_actualizacion from Marca where fecha_actualizacion is not null
+		union all
+		select 'Categoria' as tipo, detalle as nombre, fecha_actualizacion from Categoria where fecha_actualizacion is not null
+	) as actividad
+	order by fecha_actualizacion desc
+	limit 5;
+
+create procedure sp_dashboardProductosPorCategoria()
+	select
+		c.detalle as categoria,
+		count(p.id) as total_productos
+	from Categoria c
+	left join Producto p on p.id_categoria = c.id
+	group by c.id, c.detalle
+	order by total_productos desc;
+
+create procedure sp_dashboardProductosPorMarca()
+	select
+		m.detalle as marca,
+		count(p.id) as total_productos
+	from Marca m
+	left join Producto p on p.id_marca = m.id
+	group by m.id, m.detalle
+	order by total_productos desc;
+
+create procedure sp_dashboardProductosPorEstado()
+	select
+		e.detalle as estado,
+		count(p.id) as total_productos
+	from Estado e
+	left join Producto p on p.id_estado = e.id
+	group by e.id, e.detalle
+	order by total_productos desc;

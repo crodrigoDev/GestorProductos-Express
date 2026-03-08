@@ -1,4 +1,4 @@
-import type { Categorias, CategoriasConCount, Estado, FiltroProductos, Marcas, MarcasConCount, ProductoNuevo, Productos } from '@/types';
+import type { Categorias, CategoriasConCount, DashboardResumen, Estado, FiltroProductos, Marcas, MarcasConCount, ProductoNuevo, ProductosPorCategoria, ProductosPorEstado, ProductosPorMarca, Productos, UltimaActividad } from '@/types';
 
 const API = 'http://localhost:3000/api';
 
@@ -18,6 +18,11 @@ export async function listarCategorias(signal?: AbortSignal) {
 export async function listarCategoriasConTotal(signal?: AbortSignal) {
   const res = await fetch(`${API}/categorias/con-count`, { signal });
   return (await res.json()) as CategoriasConCount[];
+}
+
+export async function obtenerCategoriaPorId(id: number) {
+  const res = await fetch(`${API}/categorias/${id}`);
+  return (await res.json()) as Categorias;
 }
 
 export async function crearCategoria(detalle: string) {
@@ -46,6 +51,11 @@ export async function listarMarcasConTotal(signal?: AbortSignal) {
   return (await res.json()) as MarcasConCount[];
 }
 
+export async function obtenerMarcaPorId(id: number) {
+  const res = await fetch(`${API}/marcas/${id}`);
+  return (await res.json()) as Marcas;
+}
+
 export async function crearMarca(detalle: string) {
   const res = await fetch(`${API}/marcas`, {
     method: 'POST',
@@ -64,6 +74,11 @@ export async function listarProductos(signal?: AbortSignal, filtros?: FiltroProd
   const query = params.toString();
   const res = await fetch(`${API}/productos${query ? `?${query}` : ''}`, { signal });
   return (await res.json()) as Productos[];
+}
+
+export async function obtenerProductoPorId(id: number) {
+  const res = await fetch(`${API}/productos/${id}`);
+  return (await res.json()) as ProductoNuevo;
 }
 
 export async function cambiarEstadoProducto(idProducto: number, idEstado: number) {
@@ -114,4 +129,30 @@ export async function editarCategoria(id: number, detalle: string) {
     body: JSON.stringify({ detalle }),
   });
   await handleResponse(res);
+}
+
+// Dashboard
+export async function obtenerResumen(signal?: AbortSignal) {
+  const res = await fetch(`${API}/dashboard/resumen`, { signal });
+  return (await res.json()) as DashboardResumen;
+}
+
+export async function obtenerUltimaActividad(signal?: AbortSignal) {
+  const res = await fetch(`${API}/dashboard/ultima-actividad`, { signal });
+  return (await res.json()) as UltimaActividad[];
+}
+
+export async function obtenerProductosPorCategoria(signal?: AbortSignal) {
+  const res = await fetch(`${API}/dashboard/productos-por-categoria`, { signal });
+  return (await res.json()) as ProductosPorCategoria[];
+}
+
+export async function obtenerProductosPorMarca(signal?: AbortSignal) {
+  const res = await fetch(`${API}/dashboard/productos-por-marca`, { signal });
+  return (await res.json()) as ProductosPorMarca[];
+}
+
+export async function obtenerProductosPorEstado(signal?: AbortSignal) {
+  const res = await fetch(`${API}/dashboard/productos-por-estado`, { signal });
+  return (await res.json()) as ProductosPorEstado[];
 }

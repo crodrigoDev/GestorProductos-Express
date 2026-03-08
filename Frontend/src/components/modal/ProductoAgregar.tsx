@@ -1,5 +1,5 @@
-import { type FormEvent, useEffect, useState } from 'react';
-import type { Categorias, Estado, Marcas, ProductoNuevo, Productos } from '@/types';
+import type { FormEvent } from 'react';
+import type { Categorias, Estado, Marcas, ProductoNuevo } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -25,32 +25,7 @@ type ProductoAgregarProps = {
 	marcas: Marcas[];
 	estados: Estado[];
 	onSubmit: (producto: ProductoNuevo) => Promise<void> | void;
-	isSubmitting?: boolean;
-	productoEditar?: Productos | null;
-};
-
-type FormState = {
-	nombre: string;
-	id_marca: string;
-	id_categoria: string;
-	descripcion: string;
-	precio: string;
-	stock: string;
-	stock_min: string;
-	stock_max: string;
-	id_estado: string;
-};
-
-const initialFormState: FormState = {
-	nombre: '',
-	id_marca: '',
-	id_categoria: '',
-	descripcion: '',
-	precio: '',
-	stock: '',
-	stock_min: '',
-	stock_max: '',
-	id_estado: '',
+	productoEditar?: ProductoNuevo | null;
 };
 
 export default function ProductoAgregar({
@@ -60,90 +35,24 @@ export default function ProductoAgregar({
 	marcas,
 	estados,
 	onSubmit,
-	isSubmitting = false,
 	productoEditar = null,
 }: ProductoAgregarProps) {
 	const esEdicion = !!productoEditar;
-	const [form, setForm] = useState<FormState>(initialFormState);
-	const [error, setError] = useState<string | null>(null);
-
-	useEffect(() => {
-		if (open) {
-			setError(null);
-			if (productoEditar) {
-				setForm({
-					nombre: productoEditar.nombre,
-					id_marca: String(productoEditar.id_marca),
-					id_categoria: String(productoEditar.id_categoria),
-					descripcion: productoEditar.descripcion,
-					precio: String(productoEditar.precio),
-					stock: String(productoEditar.stock),
-					stock_min: String(productoEditar.stock_min),
-					stock_max: String(productoEditar.stock_max),
-					id_estado: String(productoEditar.id_estado),
-				});
-			}
-			return;
-		}
-
-		setForm(initialFormState);
-		setError(null);
-	}, [open, productoEditar]);
-
-	function handleInputChange(field: keyof FormState, value: string) {
-		setForm((prev) => ({ ...prev, [field]: value }));
-	}
-
-	function validate() {
-		if (!form.nombre.trim()) return 'El nombre es obligatorio';
-		if (!form.id_marca) return 'Debes seleccionar una marca';
-		if (!form.id_categoria) return 'Debes seleccionar una categoria';
-		if (!form.id_estado) return 'Debes seleccionar un estado';
-
-		if (form.precio === '' || Number.isNaN(Number(form.precio))) return 'Ingresa un precio valido';
-		if (form.stock === '' || Number.isNaN(Number(form.stock))) return 'Ingresa un stock valido';
-		if (form.stock_min === '' || Number.isNaN(Number(form.stock_min))) {
-			return 'Ingresa un stock minimo valido';
-		}
-		if (form.stock_max === '' || Number.isNaN(Number(form.stock_max))) {
-			return 'Ingresa un stock maximo valido';
-		}
-
-		const precio = Number(form.precio);
-		const stock = Number(form.stock);
-		const stockMin = Number(form.stock_min);
-		const stockMax = Number(form.stock_max);
-
-		if (precio < 0) return 'El precio no puede ser negativo';
-		if (stock < 0 || stockMin < 0 || stockMax < 0) return 'Los valores de stock no pueden ser negativos';
-		if (stockMin > stockMax) return 'El stock minimo no puede ser mayor al maximo';
-
-		return null;
-	}
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-
-		const validationError = validate();
-		if (validationError) {
-			setError(validationError);
-			return;
-		}
-
-		const producto: ProductoNuevo = {
-			nombre: form.nombre.trim(),
-			id_marca: Number(form.id_marca),
-			id_categoria: Number(form.id_categoria),
-			descripcion: form.descripcion.trim(),
-			precio: Number(form.precio),
-			stock: Number(form.stock),
-			stock_min: Number(form.stock_min),
-			stock_max: Number(form.stock_max),
-			id_estado: Number(form.id_estado),
-		};
-
-		setError(null);
-		await onSubmit(producto);
+		const fd = new FormData(event.currentTarget);
+		await onSubmit({
+			nombre: String(fd.get('nombre')).trim(),
+			id_marca: Number(fd.get('id_marca')),
+			id_categoria: Number(fd.get('id_categoria')),
+			descripcion: String(fd.get('descripcion')).trim(),
+			precio: Number(fd.get('precio')),
+			stock: Number(fd.get('stock')),
+			stock_min: Number(fd.get('stock_min')),
+			stock_max: Number(fd.get('stock_max')),
+			id_estado: Number(fd.get('id_estado')),
+		});
 	};
 
 	return (
@@ -154,15 +63,15 @@ export default function ProductoAgregar({
 					<SheetDescription>{esEdicion ? 'Modifica los datos del producto.' : 'Completa los datos para registrar un nuevo producto.'}</SheetDescription>
 				</SheetHeader>
 
-				<form onSubmit={handleSubmit} className="space-y-4 px-4 pb-6">
+				<form key={productoEditar ? JSON.stringify(productoEditar) : 'nuevo'} onSubmit={handleSubmit} className="space-y-4 px-4 pb-6">
 					<div className="space-y-2">
 						<label htmlFor="nombre" className="text-sm font-medium">
 							Nombre
 						</label>
 						<Input
 							id="nombre"
-							value={form.nombre}
-							onChange={(e) => handleInputChange('nombre', e.target.value)}
+							name="nombre"
+							defaultValue={productoEditar?.nombre ?? ''}
 							placeholder="Ej. Teclado mecanico"
 						/>
 					</div>
@@ -170,7 +79,7 @@ export default function ProductoAgregar({
 					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<div className="space-y-2">
 							<label className="text-sm font-medium">Marca</label>
-							<Select value={form.id_marca} onValueChange={(value) => handleInputChange('id_marca', value)}>
+							<Select name="id_marca" defaultValue={productoEditar ? String(productoEditar.id_marca) : undefined}>
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Selecciona marca" />
 								</SelectTrigger>
@@ -186,10 +95,7 @@ export default function ProductoAgregar({
 
 						<div className="space-y-2">
 							<label className="text-sm font-medium">Categoria</label>
-							<Select
-								value={form.id_categoria}
-								onValueChange={(value) => handleInputChange('id_categoria', value)}
-							>
+							<Select name="id_categoria" defaultValue={productoEditar ? String(productoEditar.id_categoria) : undefined}>
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Selecciona categoria" />
 								</SelectTrigger>
@@ -210,8 +116,8 @@ export default function ProductoAgregar({
 						</label>
 						<Input
 							id="descripcion"
-							value={form.descripcion}
-							onChange={(e) => handleInputChange('descripcion', e.target.value)}
+							name="descripcion"
+							defaultValue={productoEditar?.descripcion ?? ''}
 							placeholder="Descripcion breve del producto"
 						/>
 					</div>
@@ -223,11 +129,11 @@ export default function ProductoAgregar({
 							</label>
 							<Input
 								id="precio"
+								name="precio"
 								type="number"
 								min="0"
 								step="0.01"
-								value={form.precio}
-								onChange={(e) => handleInputChange('precio', e.target.value)}
+								defaultValue={productoEditar?.precio ?? ''}
 								placeholder="0.00"
 							/>
 						</div>
@@ -238,11 +144,11 @@ export default function ProductoAgregar({
 							</label>
 							<Input
 								id="stock"
+								name="stock"
 								type="number"
 								min="0"
 								step="1"
-								value={form.stock}
-								onChange={(e) => handleInputChange('stock', e.target.value)}
+								defaultValue={productoEditar?.stock ?? ''}
 								placeholder="0"
 							/>
 						</div>
@@ -255,11 +161,11 @@ export default function ProductoAgregar({
 							</label>
 							<Input
 								id="stock_min"
+								name="stock_min"
 								type="number"
 								min="0"
 								step="1"
-								value={form.stock_min}
-								onChange={(e) => handleInputChange('stock_min', e.target.value)}
+								defaultValue={productoEditar?.stock_min ?? ''}
 								placeholder="0"
 							/>
 						</div>
@@ -270,11 +176,11 @@ export default function ProductoAgregar({
 							</label>
 							<Input
 								id="stock_max"
+								name="stock_max"
 								type="number"
 								min="0"
 								step="1"
-								value={form.stock_max}
-								onChange={(e) => handleInputChange('stock_max', e.target.value)}
+								defaultValue={productoEditar?.stock_max ?? ''}
 								placeholder="0"
 							/>
 						</div>
@@ -282,7 +188,7 @@ export default function ProductoAgregar({
 
 					<div className="space-y-2">
 						<label className="text-sm font-medium">Estado</label>
-						<Select value={form.id_estado} onValueChange={(value) => handleInputChange('id_estado', value)}>
+						<Select name="id_estado" defaultValue={productoEditar ? String(productoEditar.id_estado) : undefined}>
 							<SelectTrigger className="w-full">
 								<SelectValue placeholder="Selecciona estado" />
 							</SelectTrigger>
@@ -296,15 +202,13 @@ export default function ProductoAgregar({
 						</Select>
 					</div>
 
-					{error && <p className="text-sm text-red-600">{error}</p>}
-
 					<SheetFooter className="px-0 pb-0">
 						<div className="flex w-full justify-end gap-2">
-							<Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
+							<Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
 								Cancelar
 							</Button>
-							<Button type="submit" disabled={isSubmitting}>
-								{isSubmitting ? 'Guardando...' : esEdicion ? 'Editar producto' : 'Guardar producto'}
+							<Button type="submit">
+								{esEdicion ? 'Editar producto' : 'Guardar producto'}
 							</Button>
 						</div>
 					</SheetFooter>

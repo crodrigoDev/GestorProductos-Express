@@ -2,6 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipTrigger, } from '../ui/tooltip';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -78,20 +79,26 @@ export default function TablaProductos({
 											<TableCell>{p.stock_min}</TableCell>
 											<TableCell>{p.stock_max}</TableCell>
 											<TableCell>
-												<Badge
-													asChild
-													variant={varianteEstado(p.estado)}
-													className="cursor-pointer"
-												>
-													<button
-														type="button"
-														onClick={() => siguiente && onCambiarEstado(p, siguiente)}
-														disabled={!siguiente}
-														title="Click para cambiar estado"
-													>
-														{p.estado}
-													</button>
-												</Badge>
+												<Tooltip>
+													<TooltipTrigger asChild>
+														<Badge
+															asChild
+															variant={varianteEstado(p.estado)}
+															className="cursor-pointer"
+														>
+															<button
+																type="button"
+																onClick={() => siguiente && onCambiarEstado(p, siguiente)}
+																disabled={!siguiente}
+															>
+																{p.estado}
+															</button>
+														</Badge>
+													</TooltipTrigger>
+													<TooltipContent>
+														<p>Click para cambiar de estado</p>
+													</TooltipContent>
+												</Tooltip>
 											</TableCell>
 											<TableCell>{formatFecha(p.fecha_creacion)}</TableCell>
 											<TableCell>{formatFecha(p.fecha_actualizacion)}</TableCell>

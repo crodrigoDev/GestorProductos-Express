@@ -1,5 +1,5 @@
 import { getConnection } from '../config/database';
-import type { DashboardResumen, UltimaActividad, ProductosPorCategoria, ProductosPorMarca, ProductosPorEstado } from '../types';
+import type { DashboardResumen, UltimaActividad, UltimaCreacion ,ProductosPorCategoria, ProductosPorMarca, ProductosPorEstado } from '../types';
 
 export async function obtenerResumen(): Promise<DashboardResumen> {
   const [rows] = await getConnection().query('CALL sp_dashboardResumen()');
@@ -24,4 +24,9 @@ export async function obtenerProductosPorMarca(): Promise<ProductosPorMarca[]> {
 export async function obtenerProductosPorEstado(): Promise<ProductosPorEstado[]> {
   const [rows] = await getConnection().query('CALL sp_dashboardProductosPorEstado()');
   return ((rows as unknown[][])?.[0] ?? []) as ProductosPorEstado[];
+}
+
+export async function obtenerUltimaCreacion(): Promise<UltimaCreacion[]> {
+  const[rows] = await getConnection().query('Call sp_dashboardUltimaCreacion()');
+  return ((rows as unknown[][])?.[0] ?? [] ) as UltimaCreacion[];
 }

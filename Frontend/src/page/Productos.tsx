@@ -13,7 +13,7 @@ import {
 	listarProductos,
 	obtenerProductoPorId,
 } from '@/api';
-import ProductoAgregar from '../components/modal/ProductoAgregar';
+import ProductoForm from '../components/modal/ProductoForm';
 import type { Categorias, Estado, Marcas, ProductoNuevo, Productos } from '@/types';
 
 export default function ProductosPage() {
@@ -113,7 +113,7 @@ export default function ProductosPage() {
 				</CardContent>
 			</Card>
 
-			<ProductoAgregar
+			<ProductoForm
 				open={modalAgregarAbierto}
 				onOpenChange={(open) => {
 					setModalAgregarAbierto(open);

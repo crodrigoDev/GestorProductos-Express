@@ -19,6 +19,15 @@ export async function obtenerUltimaActividadControlador(_req: Request, res: Resp
   }
 }
 
+export async function obtenerUltimaCreacionControlador(_req: Request, res: Response){
+  try{
+    const creacion = await catalogFacade.obtenerUltimaCreacion();
+    res.json(creacion);
+  } catch (error: any) {
+    res.status(500).json({error: error.message});
+  }
+}
+
 export async function obtenerProductosPorCategoriaControlador(_req: Request, res: Response) {
   try {
     const data = await catalogFacade.obtenerProductosPorCategoria();

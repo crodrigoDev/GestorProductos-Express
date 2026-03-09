@@ -1,4 +1,4 @@
-import type { Categorias, CategoriasConCount, DashboardResumen, Estado, FiltroProductos, Marcas, MarcasConCount, ProductoNuevo, ProductosPorCategoria, ProductosPorEstado, ProductosPorMarca, Productos, UltimaActividad } from '@/types';
+import type { Categorias, CategoriasConCount, DashboardResumen, Estado, FiltroProductos, Marcas, MarcasConCount, ProductoNuevo, ProductosPorCategoria, ProductosPorEstado, ProductosPorMarca, Productos, UltimaActividad, UltimaCreacion } from '@/types';
 
 const API = 'http://localhost:3000/api';
 
@@ -140,6 +140,11 @@ export async function obtenerResumen(signal?: AbortSignal) {
 export async function obtenerUltimaActividad(signal?: AbortSignal) {
   const res = await fetch(`${API}/dashboard/ultima-actividad`, { signal });
   return (await res.json()) as UltimaActividad[];
+}
+
+export async function obtenerUltimaCreacion(signal?: AbortSignal) {
+  const res = await fetch(`${API}/dashboard/ultima-creacion`, {signal});
+  return (await res.json()) as UltimaCreacion[];
 }
 
 export async function obtenerProductosPorCategoria(signal?: AbortSignal) {

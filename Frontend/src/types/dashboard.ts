@@ -10,6 +10,12 @@ export type UltimaActividad = {
   fecha_actualizacion: string;
 };
 
+export type UltimaCreacion = {
+  tipo: string;
+  nombre: string;
+  fecha_creacion: string;
+};
+
 export type ProductosPorCategoria = {
   categoria: string;
   total_productos: number;

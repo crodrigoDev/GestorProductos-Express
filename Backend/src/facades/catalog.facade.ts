@@ -8,7 +8,7 @@ import type {
   Categoria, CategoriaConCount,
   Marca, MarcaConCount,
   Estado,
-  DashboardResumen, UltimaActividad, ProductosPorCategoria, ProductosPorMarca,
+  DashboardResumen, UltimaActividad, UltimaCreacion, ProductosPorCategoria, ProductosPorMarca,
 } from '../types';
 
 class CatalogFacade {
@@ -107,6 +107,10 @@ class CatalogFacade {
 
   obtenerUltimaActividad(): Promise<UltimaActividad[]> {
     return dashboardService.obtenerUltimaActividad();
+  }
+
+  obtenerUltimaCreacion(): Promise<UltimaCreacion[]> {
+    return dashboardService.obtenerUltimaCreacion();
   }
 
   obtenerProductosPorCategoria(): Promise<ProductosPorCategoria[]> {

@@ -28,7 +28,7 @@ type ProductoAgregarProps = {
 	productoEditar?: ProductoNuevo | null;
 };
 
-export default function ProductoAgregar({
+export default function ProductoForm({
 	open,
 	onOpenChange,
 	categorias,

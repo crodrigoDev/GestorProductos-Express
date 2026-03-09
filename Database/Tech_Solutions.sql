@@ -275,6 +275,14 @@ create procedure sp_dashboardUltimaActividad()
 	order by fecha_actualizacion desc
 	limit 5;
 
+create procedure sp_dashboardUltimaCreacion()
+	select tipo, nombre, fecha_creacion from(
+		select 'Producto' as tipo, nombre, fecha_creacion from Producto union all
+		select 'Marca' as tipo, detalle, fecha_creacion from Marca union all
+		select 'Categoria' as tipo, detalle, fecha_creacion from Categoria
+	) as fecha_creacion
+	order by fecha_creacion desc limit 5;
+
 create procedure sp_dashboardProductosPorCategoria()
 	select
 		c.detalle as categoria,

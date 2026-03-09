@@ -24,6 +24,14 @@ describe('GET /api/dashboard/ultima-actividad', () => {
   });
 });
 
+describe('GET /api/dashboar/ultima-creacion', () => {
+  test('Deberia devolver status 200', async () => {
+    mock.obtenerUltimaCreacion.mockResolvedValue([]);
+    const res = await request(app).get('/api/dashboard/ultima-creacion');
+    expect(res.statusCode).toBe(200);
+  });
+});
+
 describe('GET /api/dashboard/productos-por-categoria', () => {
   test('Deberia devolver status 200', async () => {
     mock.obtenerProductosPorCategoria.mockResolvedValue([]);
